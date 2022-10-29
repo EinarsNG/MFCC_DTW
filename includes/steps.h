@@ -7,17 +7,17 @@
 Vector<float> preemph(Vector<float> &data, float coeff = 0.97f);
 
 Vector2d<float> framing(
-		Vector<float> &data,
-		size_t sample_rate,
-		float frame_len,
-		float frame_step
+    Vector<float> &data,
+    size_t sample_rate,
+    float frame_len,
+    float frame_step
 );
 
 Vector<float> hamming_window(Vector<float> &data);
 
 Vector2d<float> dft(
-		Vector2d<float> frames,
-		size_t nfft
+    Vector2d<float> frames,
+    size_t nfft
 );
 
 Vector2d<float> powspec(Vector2d<float> frames, size_t nfft);

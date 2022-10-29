@@ -9,126 +9,126 @@
 // reads a single raw sample (pcm) into memory
 Vector<float> read_data(std::string filepath)
 {
-	std::ifstream ifs(filepath, std::ios::binary);
-	if (!ifs.is_open())
-	{
+  std::ifstream ifs(filepath, std::ios::binary);
+  if (!ifs.is_open())
+  {
     printf("Failed to read file %s: %s\n", filepath.c_str(), strerror(errno));
-		return Vector<float>();
-	}
-	ifs.seekg(0, std::ios::end);
-	size_t length = ifs.tellg();
-	ifs.seekg(0, std::ios::beg);
-	Vector<float> res(length / sizeof(float));
-	ifs.read((char*)res.data(), length);
-	ifs.close();
-	return res;
+    return Vector<float>();
+  }
+  ifs.seekg(0, std::ios::end);
+  size_t length = ifs.tellg();
+  ifs.seekg(0, std::ios::beg);
+  Vector<float> res(length / sizeof(float));
+  ifs.read((char*)res.data(), length);
+  ifs.close();
+  return res;
 }
 
 // reads mutliple raw samples into memory (Warning: Can be memory intensive,
 // though for the sake of this example should be fine)
 Vector2d<float> read_all_data(std::string folder)
 {
-	Vector2d<float> pcms;
+  Vector2d<float> pcms;
 
-	// we want to sort paths so they are in correct order: i.e. 1.pcm, 2.pcm, 3.pcm, ...
-	Vector<std::string> filepaths;
+  // we want to sort paths so they are in correct order: i.e. 1.pcm, 2.pcm, 3.pcm, ...
+  Vector<std::string> filepaths;
 
-	for (auto & entry : std::filesystem::directory_iterator(folder))
-	{
-		std::regex re_expr(".*[0-9]+\\.tmp$");
-		std::smatch re_match;
-		std::string path = std::string(entry.path());
-		if (std::regex_search(path, re_match, re_expr))
-		{
-			std::string path = std::string(entry.path());
-			filepaths.push_back(path);
-		}
-	}
+  for (auto & entry : std::filesystem::directory_iterator(folder))
+  {
+    std::regex re_expr(".*[0-9]+\\.tmp$");
+    std::smatch re_match;
+    std::string path = std::string(entry.path());
+    if (std::regex_search(path, re_match, re_expr))
+    {
+      std::string path = std::string(entry.path());
+      filepaths.push_back(path);
+    }
+  }
 
-	auto predicate = [](const std::string& a, const std::string& b) -> bool
-	{
-		std::regex re_expr(".*[0-9]+\\.tmp$");
-		std::string num_a;
-		std::string num_b;
+  auto predicate = [](const std::string& a, const std::string& b) -> bool
+  {
+    std::regex re_expr(".*[0-9]+\\.tmp$");
+    std::string num_a;
+    std::string num_b;
 
-		std::smatch re_match;
-		if (std::regex_search(a, re_match, re_expr))
-		{
-			num_a = re_match[1].str();
-		}
-		else
-		{
-			num_a = "0";
-		}
+    std::smatch re_match;
+    if (std::regex_search(a, re_match, re_expr))
+    {
+      num_a = re_match[1].str();
+    }
+    else
+    {
+      num_a = "0";
+    }
 
-		if (std::regex_search(b, re_match, re_expr))
-		{
-			num_b = re_match[1].str();
-		}
-		else
-		{
-			num_b = "0";
-		}
-		return atoll(num_a.c_str()) < atoll(num_b.c_str());
-	};
-	std::sort(filepaths.begin(), filepaths.end(), predicate);
+    if (std::regex_search(b, re_match, re_expr))
+    {
+      num_b = re_match[1].str();
+    }
+    else
+    {
+      num_b = "0";
+    }
+    return atoll(num_a.c_str()) < atoll(num_b.c_str());
+  };
+  std::sort(filepaths.begin(), filepaths.end(), predicate);
 
-	for (auto & entry : filepaths)
-	{
-		Vector<float> temp = read_data(entry);
+  for (auto & entry : filepaths)
+  {
+    Vector<float> temp = read_data(entry);
     if (temp == Vector<float>())
       return Vector2d<float>();
-		pcms.push_back(temp);
-	}
+    pcms.push_back(temp);
+  }
 
-	return pcms;
+  return pcms;
 }
 
 // exports a single result
 bool export_result(std::string filepath, Vector<float>& data)
 {
-	std::ofstream ofs(filepath, std::ios::binary);
-	if (!ofs.is_open())
+  std::ofstream ofs(filepath, std::ios::binary);
+  if (!ofs.is_open())
   {
     printf("Failed to write file %s: %s\n", filepath.c_str(), strerror(errno));
     return false;
   }
-	ofs.write((char*)data.data(), sizeof(float) * data.size());
-	ofs.close();
-	return true;
+  ofs.write((char*)data.data(), sizeof(float) * data.size());
+  ofs.close();
+  return true;
 }
 
 // exports multiple results
 bool export_results(std::string folder, Vector2d<float>& data)
 {
-	std::filesystem::path out(folder);
-	std::filesystem::directory_entry dir(out);
-	if (!dir.exists())
-	{
-		std::filesystem::create_directory(dir);
-	}
-	bool res = true;
-	for (size_t i = 0; i < data.size(); i++)
-	{
-		std::filesystem::path filename(std::to_string(i+1) + ".tmp");
-		auto final_path = out / filename;
-		std::string out_str = std::string(final_path.string());
-		if(!export_result(out_str, data[i]))
+  std::filesystem::path out(folder);
+  std::filesystem::directory_entry dir(out);
+  if (!dir.exists())
+  {
+    std::filesystem::create_directory(dir);
+  }
+  bool res = true;
+  for (size_t i = 0; i < data.size(); i++)
+  {
+    std::filesystem::path filename(std::to_string(i+1) + ".tmp");
+    auto final_path = out / filename;
+    std::string out_str = std::string(final_path.string());
+    if(!export_result(out_str, data[i]))
     {
       res = false;
       break;
     }
-	}
-	return res;
+  }
+  return res;
 }
 
 size_t calculate_nfft(size_t sample_rate, float window_length)
 {
-	size_t window_samples = window_length * static_cast<float>(sample_rate);
-	size_t nfft = 1;
-	while (nfft < window_samples)
-		nfft *= 2;
-	return nfft;
+  size_t window_samples = window_length * static_cast<float>(sample_rate);
+  size_t nfft = 1;
+  while (nfft < window_samples)
+    nfft *= 2;
+  return nfft;
 }
 
 Vector<float> rowsum(Vector2d<float>& powspectrum)
