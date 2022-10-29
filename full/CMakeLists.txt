@@ -1,0 +1,4 @@
+project(MFFC_DTW)
+
+set(CMAKE_BINARY_DIR bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
