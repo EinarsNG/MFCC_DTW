@@ -24,7 +24,7 @@ int main(int argc, char ** argv)
 		exit(EXIT_FAILURE);
 	}
 	Vector<float> preemphasised = preemph(original);
-	if(!export_pcm(output, preemphasised))
+	if(!export_result(output, preemphasised))
 	{
 		printf("There was an issue exporting the result\n");
 		exit(EXIT_FAILURE);

@@ -23,11 +23,11 @@ Vector2d<float> framing(
 
 	Vector<float> padded = data;
 	// add zero-padding in case it does not line up
-	size_t pad_amount;
-	if ((pad_amount = data.size() % frame_step_samples) != 0)
-	{
-		for (size_t i = 0; i < pad_amount; i++) padded.push_back(0);
-	}
+  size_t numframes = 1;
+  if (data.size() > frame_size_samples)
+    numframes += ceil((static_cast<float>(data.size()) - frame_size_samples) / frame_step_samples);
+	size_t pad_amount = ((numframes - 1) * frame_step_samples + frame_size_samples) - data.size();
+  for (size_t i = 0; i < pad_amount; i++) padded.push_back(0);
 
 	Vector2d<float> res;
 	Vector<float> temp(frame_size_samples);

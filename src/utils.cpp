@@ -80,8 +80,8 @@ Vector2d<float> read_pcms(std::string folder)
 	return pcms;
 }
 
-// exports a single pcm
-bool export_pcm(std::string filepath, Vector<float>& data)
+// exports a single result
+bool export_result(std::string filepath, Vector<float>& data)
 {
 	std::ofstream ofs(filepath, std::ios::binary);
 	if (!ofs.is_open()) return false;
@@ -90,8 +90,8 @@ bool export_pcm(std::string filepath, Vector<float>& data)
 	return true;
 }
 
-// exports multiple pcms
-bool export_pcms(std::string folder, Vector2d<float>& data)
+// exports multiple results
+bool export_results(std::string folder, Vector2d<float>& data, std::string suffix)
 {
 	std::filesystem::path out(folder);
 	std::filesystem::directory_entry dir(out);
@@ -102,10 +102,10 @@ bool export_pcms(std::string folder, Vector2d<float>& data)
 	bool res = true;
 	for (size_t i = 0; i < data.size(); i++)
 	{
-		std::filesystem::path filename(std::to_string(i+1) + ".pcm");
+		std::filesystem::path filename(std::to_string(i+1) + suffix);
 		auto final_path = out / filename;
 		std::string out_str = std::string(final_path.string());
-		if(!export_pcm(out_str, data[i])) res = false;
+		if(!export_result(out_str, data[i])) res = false;
 	}
 	return res;
 }
@@ -119,7 +119,7 @@ size_t calculate_nfft(size_t sample_rate, float window_length)
 	return nfft;
 }
 
-Vector<float> rowsum(Vector2d<float> powspectrum)
+Vector<float> rowsum(Vector2d<float>& powspectrum)
 {
   Vector<float> res(powspectrum.size());
   for (size_t i = 0; i < powspectrum.size(); i++)
@@ -156,5 +156,32 @@ Vector<float> linearspace(float start, float end, size_t count)
   float step = (end - start) / static_cast<float>(count - 1);
   for (float i = start; i <= end; i += step)
     res.push_back(i);
+  return res;
+}
+
+Vector2d<float> transpose(Vector2d<float>& matrix)
+{
+  Vector2d<float> res(matrix[0].size(), Vector<float>(matrix.size(), 0));
+  for (size_t i = 0; i < matrix[0].size(); i++)
+  {
+    for (size_t j = 0; j < matrix.size(); j++)
+    {
+      res[i][j] = matrix[j][i];
+    }
+  }
+  return res;
+}
+
+Vector2d<float> operator*(Vector2d<float>& a, Vector2d<float>& b)
+{
+  Vector2d<float> res(a.size(), Vector<float>(b[0].size(), 0));
+  for (size_t i = 0; i < a.size(); i++)
+  {
+    for (size_t k = 0; k < b.size(); k++)
+    {
+      for (size_t j = 0; j < b[0].size(); j++)
+        res[i][j] += a[i][k] * b[k][j];
+    }
+  }
   return res;
 }

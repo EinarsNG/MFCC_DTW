@@ -25,7 +25,7 @@ int main(int argc, char ** argv)
 	size_t nfft = calculate_nfft(SAMPLE_RATE, WINDOW_LENGHT);
 	Vector2d<float> result = dft(in, nfft);
 
-	if(!export_pcms(output, result))
+	if(!export_results(output, result))
 	{
 		printf("There was an issue exporting the result\n");
 		exit(EXIT_FAILURE);

@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
 		res.push_back(hamming_window(entry));
 	}
 
-	if(!export_pcms(output, res))
+	if(!export_results(output, res))
 	{
 		printf("There was an issue exporting the result\n");
 		exit(EXIT_FAILURE);

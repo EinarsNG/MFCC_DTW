@@ -21,6 +21,14 @@ int main(int argc, char ** argv)
 	size_t nfft = calculate_nfft(SAMPLE_RATE, WINDOW_LENGHT);
 	Vector2d<float> res = powspec(data, nfft);
   Vector<float> reduced = rowsum(res);
+  for (auto & entry : reduced)
+  {
+    if (entry == 0.0f)
+    {
+      printf("None of row sums from power spectrum can be 0. This might be due to one of the frames (in framing step) being all 0)\n");
+      exit(EXIT_FAILURE);
+    }
+  }
 	
 	//if (!export_pcms(output, res))
 	//{

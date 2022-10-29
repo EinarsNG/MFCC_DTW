@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
 	}
 
 	Vector2d<float> res = framing(data, SAMPLE_RATE, FRAME_SIZE, FRAME_STEP);
-	if (!export_pcms(output, res))
+	if (!export_results(output, res))
 	{
 		printf("There was an issue exporting the result\n");
 		exit(EXIT_FAILURE);
