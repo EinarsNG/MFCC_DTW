@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
 	std::string input = argv[1];
 	std::string output = argv[2];
 
-	Vector2d<float> data = read_pcms(input);
+	Vector2d<float> data = read_all_data(input);
 	size_t nfft = calculate_nfft(SAMPLE_RATE, WINDOW_LENGHT);
 	Vector2d<float> res = powspec(data, nfft);
   Vector<float> reduced = rowsum(res);

@@ -9,8 +9,8 @@ using Vector = std::vector<T>;
 template<typename T>
 using Vector2d = std::vector<std::vector<T>>;
 
-Vector<float> read_pcm(std::string filepath);
-Vector2d<float> read_pcms(std::string folder);
+Vector<float> read_data(std::string filepath);
+Vector2d<float> read_all_data(std::string folder, std::string suffix = ".pcm");
 
 bool export_result(std::string filepath, Vector<float>& data);
 bool export_results(std::string folder, Vector2d<float>& data, std::string suffix = ".pcm");

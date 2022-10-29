@@ -7,7 +7,7 @@
 #include <includes/utils.h>
 
 // reads a single raw sample (pcm) into memory
-Vector<float> read_pcm(std::string filepath)
+Vector<float> read_data(std::string filepath)
 {
 	std::ifstream ifs(filepath, std::ios::binary);
 	if (!ifs.is_open())
@@ -25,15 +25,21 @@ Vector<float> read_pcm(std::string filepath)
 
 // reads mutliple raw samples into memory (Warning: Can be memory intensive,
 // though for the sake of this example should be fine)
-Vector2d<float> read_pcms(std::string folder)
+Vector2d<float> read_all_data(std::string folder, std::string suffix)
 {
 	Vector2d<float> pcms;
 
 	// we want to sort paths so they are in correct order: i.e. 1.pcm, 2.pcm, 3.pcm, ...
 	Vector<std::string> filepaths;
+  std::string expression;
+  if (suffix != "")
+    expression = ".*[0-9]+\\."+suffix+"$";
+  else
+    expression = ".*[0-9]+"+suffix+"$";
+
 	for (auto & entry : std::filesystem::directory_iterator(folder))
 	{
-		std::regex re_expr(".*[0-9]+\\.pcm$");
+		std::regex re_expr(expression);
 		std::smatch re_match;
 		std::string path = std::string(entry.path());
 		if (std::regex_search(path, re_match, re_expr))
@@ -43,9 +49,13 @@ Vector2d<float> read_pcms(std::string folder)
 		}
 	}
 
-	auto predicate = [](const std::string& a, const std::string& b) -> bool
+  if (suffix != "")
+    expression =".*?([0-9]+)\\."+suffix+"$";
+  else
+    expression =".*?([0-9]+)\\."+suffix+"$";
+	auto predicate = [expression](const std::string& a, const std::string& b) -> bool
 	{
-		std::regex re_expr(".*?([0-9]+)\\.pcm$");
+		std::regex re_expr(expression);
 		std::string num_a;
 		std::string num_b;
 
@@ -73,7 +83,7 @@ Vector2d<float> read_pcms(std::string folder)
 
 	for (auto & entry : filepaths)
 	{
-		Vector<float> temp = read_pcm(entry);
+		Vector<float> temp = read_data(entry);
 		pcms.push_back(temp);
 	}
 

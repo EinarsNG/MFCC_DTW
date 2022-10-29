@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
 	std::string input = argv[1];
 	std::string output = argv[2];
 	
-	Vector2d<float> data = read_pcms(input);
+	Vector2d<float> data = read_all_data(input);
 	Vector2d<float> res;
 	for (auto & entry : data)
 	{

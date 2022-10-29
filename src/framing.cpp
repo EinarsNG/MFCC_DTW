@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
 	std::string input = argv[1];
 	std::string output = argv[2];
 
-	Vector<float> data = read_pcm(input);
+	Vector<float> data = read_data(input);
 	if (data.size() == 0)
 	{
 		printf("Failed to read the sample\n");
