@@ -134,3 +134,62 @@ Vector2d<float> filterbanks(size_t numfilt, size_t nfft, size_t sample_rate)
   }
   return res;
 }
+
+Vector2d<float> log(Vector2d<float>& mtx)
+{
+  Vector2d<float> res = mtx;
+  for (auto & row : res)
+    for (auto & col : row)
+      col = log(col);
+  return res;
+}
+
+// applies Type-2 Discrete Cosine Transform to the filterbank
+Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
+{
+  Vector2d<float> res;
+  size_t n = fbank[0].size();
+  Vector<double> in_data(n);
+  Vector<double> out_data(n);
+
+  fftw_plan p = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(fft_mtx);
+    fftw_plan_r2r_1d(n,
+                     in_data.data(),
+                     out_data.data(),
+                     FFTW_REDFT10,
+                     FFTW_ESTIMATE);
+  }
+  size_t finalSize = n < numcepstra ? n : numcepstra;
+  for (size_t i = 0; i < fbank.size(); i++)
+  {
+    Vector<float> temp_in(n);
+    std::copy(fbank[i].begin(),
+        fbank[i].end(),
+        temp_in.begin());
+
+    for (size_t i = 0; i < n; i++)
+      in_data[i] = temp_in[i];
+
+    fftw_execute(p);
+
+    Vector<double> temp_out(n);
+    std::copy(out_data.begin(),
+        out_data.end(),
+        temp_out.begin());
+
+    Vector<float> coeffs(finalSize);
+    coeffs[0] = temp_out[0] * sqrt(0.25f / n);
+    double ff = sqrt(0.5f / n);
+    for (size_t j = 1; j < finalSize; j++)
+      coeffs[j] = temp_out [j] * ff;
+
+    res.push_back(coeffs);
+  }
+  {
+    std::lock_guard<std::mutex> lock(fft_mtx);
+    fftw_destroy_plan(p);
+  }
+  return res;
+}

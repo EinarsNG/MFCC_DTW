@@ -23,4 +23,8 @@ Vector2d<float> dft(
 Vector2d<float> powspec(Vector2d<float> frames, size_t nfft);
 
 Vector2d<float> filterbanks(size_t numfilt, size_t nfft, size_t sample_rate);
+
+Vector2d<float> log(Vector2d<float>& mtx);
+
+Vector2d<float> dct(Vector2d<float>& feat, size_t numceptra = 13);
 #endif

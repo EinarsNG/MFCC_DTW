@@ -10,10 +10,10 @@ template<typename T>
 using Vector2d = std::vector<std::vector<T>>;
 
 Vector<float> read_data(std::string filepath);
-Vector2d<float> read_all_data(std::string folder, std::string suffix = ".pcm");
+Vector2d<float> read_all_data(std::string folder);
 
 bool export_result(std::string filepath, Vector<float>& data);
-bool export_results(std::string folder, Vector2d<float>& data, std::string suffix = ".pcm");
+bool export_results(std::string folder, Vector2d<float>& data);
 
 size_t calculate_nfft(size_t sample_rate, float window_length);
 Vector<float> rowsum(Vector2d<float>& powspectrum);

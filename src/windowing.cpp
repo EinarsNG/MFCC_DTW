@@ -17,6 +17,11 @@ int main(int argc, char ** argv)
 	std::string output = argv[2];
 	
 	Vector2d<float> data = read_all_data(input);
+  if (data.size() == 0)
+	{
+		printf("Failed to read data\n");
+		exit(EXIT_FAILURE);
+	}
 	Vector2d<float> res;
 	for (auto & entry : data)
 	{

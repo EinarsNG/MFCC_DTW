@@ -12,6 +12,7 @@ Vector<float> read_data(std::string filepath)
 	std::ifstream ifs(filepath, std::ios::binary);
 	if (!ifs.is_open())
 	{
+    printf("Failed to read file %s: %s\n", filepath.c_str(), strerror(errno));
 		return Vector<float>();
 	}
 	ifs.seekg(0, std::ios::end);
@@ -25,21 +26,16 @@ Vector<float> read_data(std::string filepath)
 
 // reads mutliple raw samples into memory (Warning: Can be memory intensive,
 // though for the sake of this example should be fine)
-Vector2d<float> read_all_data(std::string folder, std::string suffix)
+Vector2d<float> read_all_data(std::string folder)
 {
 	Vector2d<float> pcms;
 
 	// we want to sort paths so they are in correct order: i.e. 1.pcm, 2.pcm, 3.pcm, ...
 	Vector<std::string> filepaths;
-  std::string expression;
-  if (suffix != "")
-    expression = ".*[0-9]+\\."+suffix+"$";
-  else
-    expression = ".*[0-9]+"+suffix+"$";
 
 	for (auto & entry : std::filesystem::directory_iterator(folder))
 	{
-		std::regex re_expr(expression);
+		std::regex re_expr(".*[0-9]+\\.tmp$");
 		std::smatch re_match;
 		std::string path = std::string(entry.path());
 		if (std::regex_search(path, re_match, re_expr))
@@ -49,13 +45,9 @@ Vector2d<float> read_all_data(std::string folder, std::string suffix)
 		}
 	}
 
-  if (suffix != "")
-    expression =".*?([0-9]+)\\."+suffix+"$";
-  else
-    expression =".*?([0-9]+)\\."+suffix+"$";
-	auto predicate = [expression](const std::string& a, const std::string& b) -> bool
+	auto predicate = [](const std::string& a, const std::string& b) -> bool
 	{
-		std::regex re_expr(expression);
+		std::regex re_expr(".*[0-9]+\\.tmp$");
 		std::string num_a;
 		std::string num_b;
 
@@ -84,6 +76,8 @@ Vector2d<float> read_all_data(std::string folder, std::string suffix)
 	for (auto & entry : filepaths)
 	{
 		Vector<float> temp = read_data(entry);
+    if (temp == Vector<float>())
+      return Vector2d<float>();
 		pcms.push_back(temp);
 	}
 
@@ -94,14 +88,18 @@ Vector2d<float> read_all_data(std::string folder, std::string suffix)
 bool export_result(std::string filepath, Vector<float>& data)
 {
 	std::ofstream ofs(filepath, std::ios::binary);
-	if (!ofs.is_open()) return false;
+	if (!ofs.is_open())
+  {
+    printf("Failed to write file %s: %s\n", filepath.c_str(), strerror(errno));
+    return false;
+  }
 	ofs.write((char*)data.data(), sizeof(float) * data.size());
 	ofs.close();
 	return true;
 }
 
 // exports multiple results
-bool export_results(std::string folder, Vector2d<float>& data, std::string suffix)
+bool export_results(std::string folder, Vector2d<float>& data)
 {
 	std::filesystem::path out(folder);
 	std::filesystem::directory_entry dir(out);
@@ -112,10 +110,14 @@ bool export_results(std::string folder, Vector2d<float>& data, std::string suffi
 	bool res = true;
 	for (size_t i = 0; i < data.size(); i++)
 	{
-		std::filesystem::path filename(std::to_string(i+1) + suffix);
+		std::filesystem::path filename(std::to_string(i+1) + ".tmp");
 		auto final_path = out / filename;
 		std::string out_str = std::string(final_path.string());
-		if(!export_result(out_str, data[i])) res = false;
+		if(!export_result(out_str, data[i]))
+    {
+      res = false;
+      break;
+    }
 	}
 	return res;
 }
@@ -185,6 +187,16 @@ Vector2d<float> transpose(Vector2d<float>& matrix)
 Vector2d<float> operator*(Vector2d<float>& a, Vector2d<float>& b)
 {
   Vector2d<float> res(a.size(), Vector<float>(b[0].size(), 0));
+  if (a.size() == 0 || a[0].size() == 0 || b.size() == 0 || b[0].size() == 0)
+  {
+    printf("Error: One of the matrices is empty (A[%lu,%lu], B[%lu,%lu])\n", a.size(), a[0].size(), b.size(), b[0].size());
+    return Vector2d<float>();
+  }
+  if (a[0].size() != b.size())
+  {
+    printf("Error: Matrix multiplication failed 'a' column size does not match 'b' row size (A[%lu,%lu], B[%lu,%lu])\n", a.size(), a[0].size(), b.size(), b[0].size());
+    return Vector2d<float>();
+  }
   for (size_t i = 0; i < a.size(); i++)
   {
     for (size_t k = 0; k < b.size(); k++)

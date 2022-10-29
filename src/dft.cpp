@@ -21,9 +21,14 @@ int main(int argc, char ** argv)
 	std::string input = argv[1];
 	std::string output = argv[2];
 
-	Vector2d<float> in = read_all_data(input);
+	Vector2d<float> data = read_all_data(input);
+  if (data.size() == 0)
+	{
+		printf("Failed to read data\n");
+		exit(EXIT_FAILURE);
+	}
 	size_t nfft = calculate_nfft(SAMPLE_RATE, WINDOW_LENGHT);
-	Vector2d<float> result = dft(in, nfft);
+	Vector2d<float> result = dft(data, nfft);
 
 	if(!export_results(output, result))
 	{
