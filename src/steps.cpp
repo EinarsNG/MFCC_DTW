@@ -51,7 +51,6 @@ Vector<float> hamming_window(std::vector<float>& data)
   return res;
 }
 
-static std::mutex fft_mtx;
 Vector2d<float> dft(
     Vector2d<float> frames,
     size_t nfft
@@ -62,14 +61,16 @@ Vector2d<float> dft(
   Vector<double> in_data(nfft);
   Vector<std::complex<double>> out_data(new_col_size);
 
-  fftw_plan p = nullptr;
-  {
-    std::lock_guard<std::mutex> lock(fft_mtx);
-    p = fftw_plan_dft_r2c_1d(nfft,
+  fftw_plan p = fftw_plan_dft_r2c_1d(nfft,
         in_data.data(),
         (fftw_complex *)out_data.data(),
         FFTW_ESTIMATE);
+  if (p == nullptr)
+  {
+    printf("Error: There was a problem initiating FFTW_PLAN\n");
+    return res;
   }
+
   size_t i = 0;
   for (auto & frame : frames)
   {
@@ -81,10 +82,7 @@ Vector2d<float> dft(
       temp[i] = static_cast<float>(abs(out_data[i]));
     res.push_back(temp);
   }
-  {
-    std::lock_guard<std::mutex> lock(fft_mtx);
-    fftw_destroy_plan(p);
-  }
+  fftw_destroy_plan(p);
 
   return res;
 }
@@ -152,15 +150,17 @@ Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
   Vector<double> in_data(n);
   Vector<double> out_data(n);
 
-  fftw_plan p = nullptr;
-  {
-    std::lock_guard<std::mutex> lock(fft_mtx);
-    fftw_plan_r2r_1d(n,
+  fftw_plan p = fftw_plan_r2r_1d(n,
         in_data.data(),
         out_data.data(),
         FFTW_REDFT10,
         FFTW_ESTIMATE);
+  if (p == nullptr)
+  {
+    printf("Error: There was a problem initiating FFTW_PLAN\n");
+    return res;
   }
+
   size_t finalSize = n < numcepstra ? n : numcepstra;
   for (size_t i = 0; i < fbank.size(); i++)
   {
@@ -187,9 +187,7 @@ Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
 
     res.push_back(coeffs);
   }
-  {
-    std::lock_guard<std::mutex> lock(fft_mtx);
-    fftw_destroy_plan(p);
-  }
+  fftw_destroy_plan(p);
+
   return res;
 }
