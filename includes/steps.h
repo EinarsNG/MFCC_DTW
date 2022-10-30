@@ -28,7 +28,7 @@ Vector2d<float> log(Vector2d<float>& mtx);
 
 Vector2d<float> dct(Vector2d<float>& feat, size_t numceptra = 13);
 
-Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> dtw(
+Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> dtw(
     Vector2d<float>& x,
     Vector2d<float>& y
 );

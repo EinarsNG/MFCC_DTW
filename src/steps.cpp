@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <mutex>
 #include <fftw3.h>
 
@@ -192,12 +193,12 @@ Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
   return res;
 }
 
-Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> dtw(
+Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> dtw(
     Vector2d<float>& x,
     Vector2d<float>& y
 )
 {
-  Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> res;
+  Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> res;
   if (x.size() == 0 || y.size() == 0)
   {
     printf("Error: Both matrices should have data when calculating DTW.\n");
@@ -232,7 +233,7 @@ Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> dtw(
       return sum;
     }
     for (size_t i = 0; i < a.size(); i++)
-      sum += std::abs(a[i], b[i]);
+      sum += std::abs(a[i] - b[i]);
     return sum;
   };
 
@@ -264,7 +265,45 @@ Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> dtw(
     }
   }
 
+  Vector<Pair<size_t, size_t>> path;
+  if (x.size() == 1)
+  {
+    for (size_t i = 0; i < y.size(); i++)
+      path.push_back(Pair<size_t, size_t>(0, i));
+  }
+  else if (y.size() == 1)
+  {
+    for (size_t i = 0; i < x.size(); i++)
+      path.push_back(Pair<size_t, size_t>(i, 0));
+  }
+  else
+  {
+    size_t i = D0.size() - 2;
+    size_t j = D0[0].size() - 2;
 
+    path = {Pair<size_t, size_t>(i, j)};
+    while (i > 0 || j > 0)
+    {
+      Vector<float> temp = {D0[i][j], D0[i][j + 1], D0[i + 1][j]};
+      auto min_element = std::min_element(temp.begin(), temp.end());
+      size_t tb = std::distance(temp.begin(), min_element);
+
+      if (tb == 0)
+      {
+        i -= 1;
+        j -= 1;
+      }
+      else if (tb == 1)
+        i -= 1;
+      else
+        j -= 1;
+      path.insert(path.begin(), Pair<size_t, size_t>(i, j));
+    }
+  }
+
+  //float dist = D1[D1.size() - 1][D1[D1.size() - 1].size() - 1];
+  res.first = cost_mtx;
+  res.second = path;
 
   return res;
 }
