@@ -8,6 +8,8 @@ template<typename T>
 using Vector = std::vector<T>;
 template<typename T>
 using Vector2d = std::vector<std::vector<T>>;
+template<typename T, typename N>
+using Pair = std::pair<T, N>;
 
 Vector<float> read_data(std::string filepath);
 Vector2d<float> read_all_data(std::string folder);

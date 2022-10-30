@@ -191,3 +191,80 @@ Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
 
   return res;
 }
+
+Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> dtw(
+    Vector2d<float>& x,
+    Vector2d<float>& y
+)
+{
+  Pair<Vector2d<float>, Vector2d<Pair<size_t, size_t>>> res;
+  if (x.size() == 0 || y.size() == 0)
+  {
+    printf("Error: Both matrices should have data when calculating DTW.\n");
+    return res;
+  }
+
+  size_t r = x.size();
+  size_t c = y.size();
+
+  Vector2d<float> D0(r+1, Vector<float>(c+1, 0));
+  for (size_t i = 1; i < c+1; i++)
+    D0[0][i] = INFINITY;
+  for (size_t i = 1; i < r+1; i++)
+    D0[i][0] = INFINITY;
+
+  Vector2d<float> D1;
+  D1.reserve(D0.size());
+  for (size_t i = 1; i < D0.size(); i++)
+  {
+    Vector<float> temp(D0[i].size() - 1);
+    std::copy(D0[i].begin() + 1,
+        D0[i].end(),
+        temp.begin());
+    D1.push_back(temp);
+  }
+
+  auto static distance = [](Vector<float>& a, Vector<float>& b) -> float {
+    float sum = 0.0f;
+    if (a.size() != b.size())
+    {
+      printf("Error: When calculating distances both arrays should be the same size.\n");
+      return sum;
+    }
+    for (size_t i = 0; i < a.size(); i++)
+      sum += std::abs(a[i], b[i]);
+    return sum;
+  };
+
+  for (size_t i = 0; i < r; i++)
+  {
+    for (size_t j = 0; j < c; j++)
+    {
+      D1[i][j] = distance(x[i], y[j]);
+    }
+  }
+
+  Vector2d<float> cost_mtx = D1;
+
+  Vector<float> min_list;
+  min_list.reserve(3);
+  for (size_t i = 0; i < r; i++)
+  {
+    for (size_t j = 0; j < c; j++)
+    {
+      size_t i_k = std::min<size_t>(i + 1, r);
+      size_t j_k = std::min<size_t>(j + 1, c);
+
+      min_list.push_back(D0[i][j]);
+      min_list.push_back(D0[i_k][j]);
+      min_list.push_back(D0[i][j_k]);
+
+      D1[i][j] += *std::min_element(min_list.begin(), min_list.end());
+      min_list.clear();
+    }
+  }
+
+
+
+  return res;
+}

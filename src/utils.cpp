@@ -6,7 +6,7 @@
 
 #include <includes/utils.h>
 
-// reads a single raw sample (pcm) into memory
+// reads a single file into memory
 Vector<float> read_data(std::string filepath)
 {
   std::ifstream ifs(filepath, std::ios::binary);
@@ -24,7 +24,7 @@ Vector<float> read_data(std::string filepath)
   return res;
 }
 
-// reads mutliple raw samples into memory (Warning: Can be memory intensive,
+// reads mutliple files into memory (Warning: Can be memory intensive,
 // though for the sake of this example should be fine)
 Vector2d<float> read_all_data(std::string folder)
 {
