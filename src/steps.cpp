@@ -301,9 +301,36 @@ Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> dtw(
     }
   }
 
-  //float dist = D1[D1.size() - 1][D1[D1.size() - 1].size() - 1];
+  float dist = D1[D1.size() - 1][D1[D1.size() - 1].size() - 1];
   res.first = cost_mtx;
   res.second = path;
 
   return res;
+}
+
+float normalized_min_max(Vector2d<float>& cost_mtx, Vector<Pair<size_t, size_t>>& path)
+{
+  float min_val = INFINITY;
+  float max_val = -INFINITY;
+  for (size_t i = 0; i < cost_mtx.size(); i++)
+  {
+    for (size_t j = 0; j < cost_mtx[0].size(); j++)
+    {
+      if (min_val > cost_mtx[i][j])
+        min_val = cost_mtx[i][j];
+      if (max_val < cost_mtx[i][j])
+        max_val = cost_mtx[i][j];
+    }
+  }
+
+  float sum = 0.0f;
+  for (auto &v : path)
+  {
+    size_t i = v.first;
+    size_t j = v.second;
+    sum += cost_mtx[i][j];
+  }
+
+  float avg_step = sum / path.size();
+  return std::abs<float>(1.0f - (avg_step - min_val) / (max_val - min_val));
 }

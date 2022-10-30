@@ -47,6 +47,11 @@ add_executable(dct
 	${UTILS}
 )
 
+add_executable(dtw
+	${CMAKE_SOURCE_DIR}/src/dtw.cpp
+	${UTILS}
+)
+
 target_link_libraries(preemph fftw3)
 target_link_libraries(framing fftw3)
 target_link_libraries(windowing fftw3)
@@ -55,3 +60,4 @@ target_link_libraries(powspec fftw3)
 target_link_libraries(filterbanks fftw3)
 target_link_libraries(log fftw3)
 target_link_libraries(dct fftw3)
+target_link_libraries(dtw fftw3)

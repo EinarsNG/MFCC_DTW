@@ -1,9 +1,6 @@
 #include <includes/utils.h>
 #include <includes/steps.h>
 
-constexpr size_t SAMPLE_RATE = 44100;
-constexpr float WINDOW_LENGHT = 0.5; // 500 ms
-
 int main(int argc, char ** argv)
 {
   if (argc < 3)

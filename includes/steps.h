@@ -32,4 +32,6 @@ Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> dtw(
     Vector2d<float>& x,
     Vector2d<float>& y
 );
+
+float normalized_min_max(Vector2d<float>& cost_mtx, Vector<Pair<size_t, size_t>>& path);
 #endif

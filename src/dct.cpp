@@ -1,8 +1,6 @@
 #include <includes/utils.h>
 #include <includes/steps.h>
 
-constexpr size_t SAMPLE_RATE = 44100;
-constexpr float WINDOW_LENGHT = 0.5; // 500 ms
 constexpr size_t NUM_CEPSTRA = 13;
 
 int main(int argc, char ** argv)
