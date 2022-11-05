@@ -150,7 +150,7 @@ Vector2d<float> log(Vector2d<float>& mtx)
   return res;
 }
 
-// applies Type-2 Discrete Cosine Transform to the filterbank
+// applies Type-2 Discrete Cosine Transform to the powspec * filterbank result matrix
 Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
 {
   Vector2d<float> res;
