@@ -3,8 +3,6 @@ project(MFFC_DTW)
 set(CMAKE_BINARY_DIR bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
-add_compile_options(-g)
-
 set (UTILS
 	${CMAKE_SOURCE_DIR}/src/utils.cpp
 	${CMAKE_SOURCE_DIR}/src/steps.cpp
