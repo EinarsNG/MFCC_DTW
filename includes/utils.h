@@ -18,7 +18,6 @@ bool export_result(std::string filepath, Vector<float>& data);
 bool export_results(std::string folder, Vector2d<float>& data);
 
 size_t calculate_nfft(size_t sample_rate, float window_length);
-Vector<float> rowsum(Vector2d<float>& powspectrum);
 float hz_to_mel(size_t freq);
 size_t mel_to_hz(float mel);
 float mel_to_fft_bin(float mel, size_t nfft, size_t sample_rate);

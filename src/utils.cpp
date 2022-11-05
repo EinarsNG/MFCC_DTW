@@ -131,19 +131,6 @@ size_t calculate_nfft(size_t sample_rate, float window_length)
   return nfft;
 }
 
-Vector<float> rowsum(Vector2d<float>& powspectrum)
-{
-  Vector<float> res(powspectrum.size());
-  for (size_t i = 0; i < powspectrum.size(); i++)
-  {
-    float sum = 0;
-    for (auto & entry : powspectrum[i])
-      sum += entry;
-    res[i] = sum;
-  }
-  return res;
-}
-
 float hz_to_mel(size_t freq)
 {
   return 2595.0f * log10(1.0f + static_cast<float>(freq) / 700.0f);
