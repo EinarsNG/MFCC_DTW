@@ -3,52 +3,54 @@ project(MFFC_DTW)
 set(CMAKE_BINARY_DIR bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
+add_compile_options(-g)
+
 set (UTILS
 	${CMAKE_SOURCE_DIR}/src/utils.cpp
 	${CMAKE_SOURCE_DIR}/src/steps.cpp
 )
 
 add_executable(preemph
-	${CMAKE_SOURCE_DIR}/src/preemphasis.cpp
+	${CMAKE_SOURCE_DIR}/steps/preemphasis.cpp
 	${UTILS}
 )
 
 add_executable(framing
-	${CMAKE_SOURCE_DIR}/src/framing.cpp
+	${CMAKE_SOURCE_DIR}/steps/framing.cpp
 	${UTILS}
 )
 
 add_executable(windowing
-	${CMAKE_SOURCE_DIR}/src/windowing.cpp
+	${CMAKE_SOURCE_DIR}/steps/windowing.cpp
 	${UTILS}
 )
 add_executable(dft
-	${CMAKE_SOURCE_DIR}/src/dft.cpp
+	${CMAKE_SOURCE_DIR}/steps/dft.cpp
 	${UTILS}
 )
 
 add_executable(powspec
-	${CMAKE_SOURCE_DIR}/src/powerspectrum.cpp
+	${CMAKE_SOURCE_DIR}/steps/powerspectrum.cpp
 	${UTILS}
 )
 
 add_executable(filterbanks
-	${CMAKE_SOURCE_DIR}/src/filterbanks.cpp
+	${CMAKE_SOURCE_DIR}/steps/filterbanks.cpp
 	${UTILS}
 )
 
 add_executable(log
-	${CMAKE_SOURCE_DIR}/src/logarithm.cpp
+	${CMAKE_SOURCE_DIR}/steps/logarithm.cpp
 	${UTILS}
 )
 
 add_executable(dct
-	${CMAKE_SOURCE_DIR}/src/dct.cpp
+	${CMAKE_SOURCE_DIR}/steps/dct.cpp
 	${UTILS}
 )
 
 add_executable(dtw
-	${CMAKE_SOURCE_DIR}/src/dtw.cpp
+	${CMAKE_SOURCE_DIR}/steps/dtw.cpp
 	${UTILS}
 )
 
