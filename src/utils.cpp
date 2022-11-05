@@ -149,6 +149,7 @@ float mel_to_fft_bin(float mel, size_t nfft, size_t sample_rate)
   return (n + 1.0f) * hz / sr;
 }
 
+// evenly devides space, resulting a vector of points
 Vector<float> linearspace(float start, float end, size_t count)
 {
   Vector<float> res;
@@ -158,6 +159,7 @@ Vector<float> linearspace(float start, float end, size_t count)
   return res;
 }
 
+// transposes the matrix
 Vector2d<float> transpose(Vector2d<float>& matrix)
 {
   Vector2d<float> res(matrix[0].size(), Vector<float>(matrix.size(), 0));
@@ -171,6 +173,7 @@ Vector2d<float> transpose(Vector2d<float>& matrix)
   return res;
 }
 
+// enables matrix multiplication
 Vector2d<float> operator*(Vector2d<float>& a, Vector2d<float>& b)
 {
   Vector2d<float> res(a.size(), Vector<float>(b[0].size(), 0));

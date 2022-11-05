@@ -4,6 +4,7 @@
 
 #include <includes/steps.h>
 
+// applies pre-emphasis to the sample
 Vector<float> preemph(Vector<float> &data, float coeff)
 {
   std::vector<float> res(data.size());
@@ -13,6 +14,7 @@ Vector<float> preemph(Vector<float> &data, float coeff)
   return res;
 }
 
+// splits sample into frames
 Vector2d<float> framing(
     Vector<float> &data,
     size_t sample_rate,
@@ -42,7 +44,8 @@ Vector2d<float> framing(
   return res;
 }
 
-Vector<float> hamming_window(std::vector<float>& data)
+// applies hamming window to a sample or frame
+Vector<float> hamming_window(Vector<float>& data)
 {
   Vector<float> res(data.size());
   for (size_t i = 0; i < data.size(); i++)
@@ -52,6 +55,7 @@ Vector<float> hamming_window(std::vector<float>& data)
   return res;
 }
 
+// applies Discrete Fourier Transform to each frame
 Vector2d<float> dft(
     Vector2d<float> frames,
     size_t nfft
@@ -88,6 +92,7 @@ Vector2d<float> dft(
   return res;
 }
 
+// calculates power spectrum matrix
 Vector2d<float> powspec(Vector2d<float> frames, size_t nfft)
 {
   Vector2d<float> res;
@@ -101,6 +106,7 @@ Vector2d<float> powspec(Vector2d<float> frames, size_t nfft)
   return res;
 }
 
+// calculates Mel's filter banks
 Vector2d<float> filterbanks(size_t numfilt, size_t nfft, size_t sample_rate)
 {
   size_t lowfreq = 0;
@@ -134,6 +140,7 @@ Vector2d<float> filterbanks(size_t numfilt, size_t nfft, size_t sample_rate)
   return res;
 }
 
+// applies natural logarithm to each element in the matrix
 Vector2d<float> log(Vector2d<float>& mtx)
 {
   Vector2d<float> res = mtx;
@@ -193,6 +200,7 @@ Vector2d<float> dct(Vector2d<float>& fbank, size_t numcepstra)
   return res;
 }
 
+// calculates Dynamic Time Warping distance between two matrices
 Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> dtw(
     Vector2d<float>& x,
     Vector2d<float>& y
@@ -308,6 +316,7 @@ Pair<Vector2d<float>, Vector<Pair<size_t, size_t>>> dtw(
   return res;
 }
 
+// normalizes the distance gotten from DTW function to range 0 - 1
 float normalized_min_max(Vector2d<float>& cost_mtx, Vector<Pair<size_t, size_t>>& path)
 {
   float min_val = INFINITY;
