@@ -149,7 +149,7 @@ float mel_to_fft_bin(float mel, size_t nfft, size_t sample_rate)
   return (n + 1.0f) * hz / sr;
 }
 
-// evenly devides space, resulting a vector of points
+// evenly divides space, resulting a vector of points
 Vector<float> linearspace(float start, float end, size_t count)
 {
   Vector<float> res;
