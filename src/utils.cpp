@@ -84,6 +84,46 @@ Vector2d<float> read_all_data(std::string folder)
   return pcms;
 }
 
+// exports a single column
+bool export_csv(std::string filepath, Vector<float>& data)
+{
+  std::ofstream ofs(filepath, std::ios::binary);
+  if (!ofs.is_open())
+  {
+    printf("Failed to write file %s: %s\n", filepath.c_str(), strerror(errno));
+    return false;
+  }
+  for (size_t i = 0; i < data.size(); i++)
+  {
+    ofs << data[i] << "\n";
+  }
+  ofs.close();
+  return true;
+}
+
+// exports multiple columns
+bool export_csv(std::string filepath, Vector2d<float>& data)
+{
+  std::ofstream ofs(filepath, std::ios::binary);
+  if (!ofs.is_open())
+  {
+    printf("Failed to write file %s: %s\n", filepath.c_str(), strerror(errno));
+    return false;
+  }
+  for (size_t i = 0; i < data[0].size(); i++)
+  {
+    for (size_t j = 0; j < data.size(); j++)
+    {
+      ofs << data[j][i];
+      if (j < data.size() - 1)
+        ofs << ",";
+    }
+    ofs << "\n";
+  }
+  ofs.close();
+  return true;
+}
+
 // exports a single result
 bool export_result(std::string filepath, Vector<float>& data)
 {

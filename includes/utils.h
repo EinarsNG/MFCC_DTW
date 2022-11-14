@@ -14,6 +14,11 @@ using Pair = std::pair<T, N>;
 Vector<float> read_data(std::string filepath);
 Vector2d<float> read_all_data(std::string folder);
 
+// unused by the program, but present if there is a need
+// to get data at each stage
+bool export_csv(std::string filepath, Vector<float>& data);
+bool export_csv(std::string filepath, Vector2d<float>& data);
+
 bool export_result(std::string filepath, Vector<float>& data);
 bool export_results(std::string folder, Vector2d<float>& data);
 
