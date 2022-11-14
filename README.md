@@ -14,8 +14,11 @@
 | 10. | Normalization                     | *included in previous step* | Applies normalization                     |
 
 #### To compile (in terminal):
-1. `cmake .`
-2. `make`
+1. Install fftw library (`libfftw3-dev` on Linux Mint 21 / Ubuntu 22.04, `fftw` on Arch Linux, `fftw` on MacOS (Brew))
+2. `cmake .`
+3. `make`
+
+PS: If it fails to compile on MacOS invoke `cmake` with this command: `cmake . -DFFTW_INCLUDES=/opt/homebrew/opt/fftw/include` then run `make`
 
 #### To run (each individual step):
 1. `./steps/bin/preemph IN_SAMPLE_PATH OUT_SAMPLE_PATH` (f32 raw sample with 44100 sample rate)
