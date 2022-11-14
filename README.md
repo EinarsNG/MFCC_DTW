@@ -27,6 +27,7 @@
 7. `./steps/bin/log IN_FOLDER_PATH OUT_FOLDER PATH`
 8. `./steps/bin/dct IN_FOLDER_PATH OUT_FOLDER PATH`
 9. `./steps/bin/dtw IN_FOLDER_PATH IN_FOLDER PATH` (two folders with DCT calculated, outputs normalized similiarity)
+10. Normalization included in the last step
 
 #### To run (full comparison):
 `./full/bin/compare IN_SAMPLE_PATH IN_SAMPLE_PATH` (f32 raw sample with 44100 sample rate, outputs normalized similarity)
