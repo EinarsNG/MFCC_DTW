@@ -1,4 +1,4 @@
-# MFFC_DTW
+# MFCC_DTW
 #### Audio comparison algorithm steps:
 | Nr. | Step                              | File                        | Description                               |
 | --- | --------------------------------- | --------------------------- | ----------------------------------------- |
