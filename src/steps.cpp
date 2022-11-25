@@ -1,3 +1,5 @@
+// Some parts of the code were ported from Python
+// implementation at https://github.com/jameslyons/python_speech_features
 #include <algorithm>
 #include <mutex>
 #include <fftw3.h>
